@@ -81,7 +81,11 @@ class TwoBiLSTM(nn.Module):
         # Then Compute the tweet lstm model.
         embed_twe = self.tweet_embed(tweet_input)
 
-        hn_initial = torch.zeros(target_cn.size())
+        # SOLVED: The zero tensor will lead to the problem
+        #         the program couldn't run at gpu.
+        #         If device of the zero tensor same with
+        #         the device of input tensor.
+        hn_initial = torch.zeros(target_cn.size(), device=target_input.device)
         tweet_output, (tweet_hn, tweet_cn) = self.tweet_bilstm(embed_twe, (hn_initial, target_cn))
 
         # h_tweet = F.tanh(self.tweet_linear2(tweet_output))

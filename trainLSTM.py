@@ -19,7 +19,7 @@ def train(train_iter, dev_iter, test_iter,
           model, args):
 
     if args.device != -1:
-        model.cuda()
+        model.cuda(args.device)
 
     optimizer = None
     if args.Adam:
@@ -39,9 +39,9 @@ def train(train_iter, dev_iter, test_iter,
 
             # Transport the batch data to GPU.
             if args.device != -1:
-                target = target.cuda()
-                tweet = tweet.cuda()
-                attitude = attitude.cuda()
+                target = target.cuda(args.device)
+                tweet = tweet.cuda(args.device)
+                attitude = attitude.cuda(args.device)
 
             optimizer.zero_grad()
             logit = model(target, tweet)
