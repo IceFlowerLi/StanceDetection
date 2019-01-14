@@ -46,6 +46,7 @@ class StcPreprocess(object):
             'FAVOR':    2
         }
         self.stc_info = self.preprocess(file_name)
+        self.write_to_csv(file_name)
 
     def preprocess(self, file_name):
 
@@ -116,5 +117,20 @@ class StcPreprocess(object):
         label_val = self.attitude_map[attitude_word]
 
         return label_val
+
+    def write_to_csv(self, file_name):
+
+        write_name = file_name[0:-3] + '.csv'
+        write_path = './data/csvdata/' + write_name
+
+        with open(write_path, 'w') as csv_f:
+            for item in self.stc_info:
+                content = item['target'] + '\t' + item['tweet'] + '\t' + str(item['attitude']) + '\n'
+
+                csv_f.write(content)
+
+        print("Wirte %s to csv file." % file_name)
+
+
 
 

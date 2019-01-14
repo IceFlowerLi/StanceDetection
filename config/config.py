@@ -80,11 +80,17 @@ class MyConfig(ConfigParser):
 
     @property
     def FIVE_CLASS_TASK(self):
-        return self._cfg_dict.getboolean('Data', 'FIVE_CLASS_TASK')    \
+        if self._cfg_dict.getboolean('Data', 'FIVE_CLASS_TASK'):
+            return 5
+        else:
+            return False
 
     @property
     def TWO_CLASS_TASK(self):
-        return self._cfg_dict.getboolean('Data', 'TWO_CLASS_TASK')
+        if self._cfg_dict.getboolean('Data', 'TWO_CLASS_TASK'):
+            return 2
+        else:
+            return False
 
     # Save
     @property
@@ -143,6 +149,22 @@ class MyConfig(ConfigParser):
     @property
     def lstm_num_layers(self):
         return self._cfg_dict.getint("Model", "lstm_num_layers")
+
+    @property
+    def target_hidden_dim(self):
+        return self._cfg_dict.getint("Model", "target_hidden_dim")
+
+    @property
+    def target_num_layers(self):
+        return self._cfg_dict.getint("Model", "target_num_layers")
+
+    @property
+    def tweet_hidden_dim(self):
+        return self._cfg_dict.getint("Model", "tweet_hidden_dim")
+
+    @property
+    def tweet_num_layers(self):
+        return self._cfg_dict.getint("Model", "target_num_layers")
 
     @property
     def batch_normalizations(self):

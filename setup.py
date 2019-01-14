@@ -2,6 +2,9 @@
 from config.config import MyConfig
 from preprocess import StcPreprocess
 from batchsize import CreateBatch
+from networks.nnLSTM import TwoBiLSTM
+from trainLSTM import train
+
 
 if __name__ == '__main__':
 
@@ -10,13 +13,15 @@ if __name__ == '__main__':
 
     data_info = StcPreprocess("train.sd").stc_info
 
-    args = {'batch_size': 64,
-            'shuffle': True,
-            'device': -1}
+    train_batch = CreateBatch(data_info, cfg_dict)
+    train_iter = train_batch.batch_iter
+    train_vocab_num = train_batch.vocab_num
 
-    train_iter = CreateBatch(data_info, cfg_dict).batch_iter
+    cfg_dict.target_embed_num = train_vocab_num['Target']
+    cfg_dict.tweet_embed_num = train_vocab_num['Tweet']
 
-    a = iter(train_iter)
-    b = next(a)
+    lstm_model = TwoBiLSTM(cfg_dict)
+
+    train(train_iter, None, None, lstm_model, cfg_dict)
 
     print("Success!")

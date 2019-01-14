@@ -23,7 +23,7 @@ class CreateBatch(object):
         # Build fields, dataset, word dictionary and batch iterator.
         self.three_fields = self.build_fields()
         self.datasets = self.create_dataset()
-        self.build_dict()
+        self.vocab_num = self.build_dict()
         self.batch_iter = self.create_iterator()
 
     def build_fields(self):
@@ -81,7 +81,13 @@ class CreateBatch(object):
         self.three_fields[0][1].build_vocab(self.datasets)
         self.three_fields[1][1].build_vocab(self.datasets)
 
-        return None
+        target_vocab = len(self.three_fields[0][1].vocab)
+        tweet_vocab = len(self.three_fields[1][1].vocab)
+
+        vocab_num = {'Target': target_vocab,
+                     'Tweet': tweet_vocab}
+
+        return vocab_num
 
     def create_iterator(self):
 
