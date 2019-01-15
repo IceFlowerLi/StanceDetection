@@ -12,6 +12,7 @@ Version:        0.1
 
 import re
 import random
+import csv
 
 import numpy as np
 
@@ -29,6 +30,7 @@ class StcPreprocess(object):
 
     def __init__(self, file_name=None):
 
+        self.name = file_name[0:-3]
         self.path = "./data/initial/"
         self.data_name = ["dev.sd", "test.sd", "train.sd"]
 
@@ -123,11 +125,14 @@ class StcPreprocess(object):
         write_name = file_name[0:-3] + '.csv'
         write_path = './data/csvdata/' + write_name
 
-        with open(write_path, 'w') as csv_f:
-            for item in self.stc_info:
-                content = item['target'] + '\t' + item['tweet'] + '\t' + str(item['attitude']) + '\n'
+        # SOLVED: If open sentence didn't add newline='',
+        #         it will create the blank line in process of writing csv file.
+        with open(write_path, 'w', newline='', encoding='utf-8') as csv_f:
+            csv_writer = csv.writer(csv_f)
 
-                csv_f.write(content)
+            for item in self.stc_info:
+                content = [item['target'], item['tweet'], item['attitude']]
+                csv_writer.writerow(content)
 
         print("Wirte %s to csv file." % file_name)
 

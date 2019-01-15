@@ -5,6 +5,7 @@ __pycache__/
 
 # Train data
 data/
+snapshot/
 
 # Pycharm config
 .idea/

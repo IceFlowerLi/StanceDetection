@@ -65,7 +65,6 @@ def train(train_iter, dev_iter, test_iter,
                                                                              corrects,
                                                                              batch.batch_size))
 
-            '''
             if steps % args.test_interval == 0:
                 print("\nDev  Accuracy: ", end="")
                 eval(dev_iter, model, args, best_accuracy, epoch, test=False)
@@ -77,16 +76,16 @@ def train(train_iter, dev_iter, test_iter,
                 save_prefix = os.path.join(args.save_dir, 'snapshot')
                 save_path = '{}_steps{}.pt'.format(save_prefix, steps)
                 torch.save(model.state_dict(), save_path)
+                '''
                 if os.path.isfile(save_path) and args.rm_model is True:
                     os.remove(save_path)
-            '''
+                '''
 
     return epoch
 
 
 def eval(data_iter, model, args, best_accuracy, epoch, test=False):
 
-    model.eval()
     corrects, avg_loss = 0, 0
 
     for batch in data_iter:
@@ -94,20 +93,19 @@ def eval(data_iter, model, args, best_accuracy, epoch, test=False):
 
         # Transport the batch data to GPU.
         if args.device != -1:
-            target = target.cuda()
-            tweet = tweet.cuda()
-            attitude = attitude.cuda()
+            target = target.cuda(args.device)
+            tweet = tweet.cuda(args.device)
+            attitude = attitude.cuda(args.device)
 
         logit = model(target, tweet)
         loss = F.cross_entropy(logit, attitude, size_average=False)
 
-        avg_loss += loss.data[0]
-        corrects += (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+        avg_loss += loss.item()
+        corrects += (torch.max(logit, 1)[1].view(attitude.size()).data == attitude.data).sum()
 
     size = len(data_iter.dataset)
-    avg_loss = loss.data[0]/size
+    avg_loss = loss.item()/size
     accuracy = float(corrects)/size * 100.0
-    model.train()
     print(' Evaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) '.format(avg_loss, accuracy, corrects, size))
 
     if test is False:
@@ -122,3 +120,5 @@ def eval(data_iter, model, args, best_accuracy, epoch, test=False):
         print("The Current Best Dev Accuracy: {:.4f}, and Test Accuracy is :{:.4f}, locate on {} epoch.\n".format(
             best_accuracy.best_dev_accuracy, best_accuracy.accuracy, best_accuracy.best_epoch))
         best_accuracy.best_test = False
+
+
